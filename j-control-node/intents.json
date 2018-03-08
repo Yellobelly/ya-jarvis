@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+      "intent": "PumpControlOnIntent"
+    },
+    {
+      "intent": "PumpControlOffIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
