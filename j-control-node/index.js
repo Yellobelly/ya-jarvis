@@ -16,9 +16,9 @@ var APP_ID = undefined; //replace with "amzn1.echo-sdk-ams.app.[your-unique-valu
 /*****/
 //Environment Configuration
 var config = {};
-config.IOT_BROKER_ENDPOINT      = "{privateValue}".toLowerCase();
+config.IOT_BROKER_ENDPOINT      = "a1jtbrpxcyrbte.iot.eu-central-1.amazonaws.com".toLowerCase();
 config.IOT_BROKER_REGION        = "eu-central-1";
-config.IOT_THING_NAME           = "lamp";
+config.IOT_THING_NAME           = "home";
 //Loading AWS SDK libraries
 var AWS = require('aws-sdk');
 AWS.config.region = config.IOT_BROKER_REGION;
@@ -69,7 +69,7 @@ HelloWorld.prototype.intentHandlers = {
         var payloadObj=1; //On
         //Prepare the parameters of the update call
         var paramsUpdate = {
-            topic:"/lamp",
+            topic:"lamp",
             payload: JSON.stringify(payloadObj),
             qos:0
         };
@@ -95,7 +95,7 @@ HelloWorld.prototype.intentHandlers = {
         //Set the lamp to 0 for activation on the device
         var payloadObj=0; //off
          var paramsUpdate = {
-            topic:"/lamp",
+            topic:"lamp",
             payload: JSON.stringify(payloadObj),
             qos:0
         };
@@ -112,6 +112,87 @@ HelloWorld.prototype.intentHandlers = {
           }    
         });
         /****/
+    },
+        "PlayIntent": function (intent, session, response) {
+        console.log("FB started");
+        /****/
+        var repromptText = null;
+        var sessionAttributes = {};
+        var shouldEndSession = true;
+        var speechOutput = "";
+        var payloadObj="file://sdcard/tues.mp3"; //Play a special song
+        //Prepare the parameters of the update call
+        var paramsUpdate = {
+            topic:"play",
+            payload: JSON.stringify(payloadObj),
+            qos:0
+        };
+        iotData.publish(paramsUpdate, function(err, data) {
+          if (err){
+            //Handle the error here
+            console.log("MQTT Error" + data);
+          }
+          else {
+            speechOutput = "This one is also a favorite of mine";
+            console.log(data);
+            response.tell(speechOutput);
+            //callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+          }    
+        });
+    },
+         "PauseIntent": function (intent, session, response) {
+        console.log("FB started");
+        /****/
+        var repromptText = null;
+        var sessionAttributes = {};
+        var shouldEndSession = true;
+        var speechOutput = "";
+        var payloadObj=1; //Pause the current song
+        //Prepare the parameters of the update call
+        var paramsUpdate = {
+            topic:"pause",
+            payload: JSON.stringify(payloadObj),
+            qos:0
+        };
+        iotData.publish(paramsUpdate, function(err, data) {
+          if (err){
+            //Handle the error here
+            console.log("MQTT Error" + data);
+          }
+          else {
+            speechOutput = "Pausing the song";
+            console.log(data);
+            response.tell(speechOutput);
+            //callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+          }    
+        });
+    },
+         "ResumeIntent": function (intent, session, response) {
+        console.log("FB started");
+        /****/
+        var repromptText = null;
+        var sessionAttributes = {};
+        var shouldEndSession = true;
+        var speechOutput = "";
+        var payloadObj=1; //Resume playing the last song
+        //Prepare the parameters of the update call
+        var paramsUpdate = {
+            topic:"resume",
+            payload: JSON.stringify(payloadObj),
+            qos:0
+        };
+        iotData.publish(paramsUpdate, function(err, data) {
+          if (err){
+            //Handle the error here
+            console.log("MQTT Error" + data);
+          }
+          else {
+            speechOutput = "Got you sir";
+            console.log(data);
+            response.tell(speechOutput);
+            //callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+          }    
+        });
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can ask me to turn the lamp on or off", "You can ask me to turn the lamp on or off");
